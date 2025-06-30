@@ -1,0 +1,15 @@
+# Core
+streamlit==1.35.0
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.4.2
+joblib==1.3.2
+
+# Text Embeddings & NLP
+sentence-transformers==2.6.1
+transformers==4.41.1
+torch==2.3.0
+nltk==3.8.1
+
+# Utilities
+tqdm==4.66.4
