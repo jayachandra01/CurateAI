@@ -11,7 +11,7 @@ Try it on Streamlit 👉 [https://curateai.streamlit.app](https://curateai.strea
 
 Given a block of text (like a news article, blog post, or paragraph), this app:
 1. **Understands the context** using a Sentence-BERT model.
-2. **Compares it** against ~200 Wikipedia topics.
+2. **Compares it** against ~500 Wikipedia topics.
 3. **Returns the top 5–10 most relevant topics** you should read next.
 
 Use cases include:
