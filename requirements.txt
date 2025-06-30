@@ -1,7 +1,0 @@
-streamlit
-wikipedia
-sentence-transformers==2.2.2
-torch==2.1.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-faiss-cpu
-beautifulsoup4
-requests
