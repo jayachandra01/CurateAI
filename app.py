@@ -17,7 +17,8 @@ input_text = st.text_area(" ", height=150)
 num_suggestions = st.slider("How many suggestions would you like?", 1, 10, 5)
 
 # Generate pipeline from Hugging Face (Flan-T5 base)
-generator = pipeline("text2text-generation", model="google/flan-t5-base")
+generator = pipeline("text2text-generation", model="google/flan-t5-base", device=-1)
+
 
 # Button to recommend
 if st.button("🔍 Recommend"):
