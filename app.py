@@ -9,7 +9,8 @@ user_input = st.text_area("Paste any topic or paragraph here:")
 num_links = st.slider("How many suggestions would you like?", min_value=1, max_value=10, value=5)
 
 # Load a Hugging Face model for text generation
-generator = pipeline("text2text-generation", model="google/flan-t5-base")
+generator = pipeline("text2text-generation", model="google/flan-t5-small", device=-1)
+
 
 if st.button("🔍 Recommend") and user_input:
     with st.spinner("Generating recommendations..."):
