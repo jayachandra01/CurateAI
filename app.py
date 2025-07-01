@@ -1,39 +1,77 @@
 import streamlit as st
 from transformers import pipeline
+import wikipedia
 import urllib.parse
 
-# Load the T5 model for text-to-text generation
-generator = pipeline("text2text-generation", model="google/flan-t5-base")
+# Set page config
+st.set_page_config(page_title="CurateAI: Wikipedia Link Recommender", page_icon="📚")
 
-# Streamlit app UI setup
-st.set_page_config(page_title="CurateAI: Wikipedia Link Recommender", layout="centered")
+# Title and instructions
 st.title("📚 CurateAI: Wikipedia Link Recommender")
+st.write("Paste any topic or paragraph here:")
 
 # User input
-user_input = st.text_area("Paste any topic or paragraph here:")
-num_links = st.slider("How many suggestions would you like?", min_value=1, max_value=10, value=5)
+input_text = st.text_area(" ", height=150)
 
-# Handle recommendation button
-if st.button("🔍 Recommend") and user_input:
-    with st.spinner("Generating recommendations..."):
-        try:
-            # Create prompt for the model
-            prompt = f"Suggest {num_links} relevant Wikipedia article titles based on this content:\n{user_input}"
+# Slider for number of suggestions
+num_suggestions = st.slider("How many suggestions would you like?", 1, 10, 5)
 
-            # Generate response using the model
-            output = generator(prompt, max_length=256, num_return_sequences=1)
-            raw_response = output[0]['generated_text']
+# Generate pipeline from Hugging Face (Flan-T5 base)
+generator = pipeline("text2text-generation", model="google/flan-t5-base")
 
-            # Format and display each suggestion as a clickable Wikipedia link
-            suggestions = raw_response.strip().split("\n")
-            st.success("Here are your recommendations:")
-            for i, suggestion in enumerate(suggestions, start=1):
-                if suggestion.strip():
-                    title = suggestion.strip().replace("*", "").strip()
-                    encoded_title = urllib.parse.quote(title.replace(" ", "_"))
-                    wiki_link = f"https://en.wikipedia.org/wiki/{encoded_title}"
-                    st.markdown(f"{i}. [{title}]({wiki_link})")
+# Button to recommend
+if st.button("🔍 Recommend"):
+    if not input_text.strip():
+        st.warning("Please enter a topic or paragraph.")
+    else:
+        with st.spinner("Generating recommendations..."):
+            try:
+                # Generate keywords from input using text2text generation
+                prompt = f"Extract important topics from: {input_text}"
+                response = generator(prompt, max_new_tokens=32, num_return_sequences=1)[0]['generated_text']
+                keywords = [kw.strip() for kw in response.split(',') if kw.strip()]
 
-        except Exception as e:
-            st.error(f"Error: {e}")
+                # Wikipedia link fetcher
+                def get_wikipedia_links(keywords, limit):
+                    found = []
+                    seen_titles = set()
+                    for kw in keywords:
+                        try:
+                            # Search Wikipedia
+                            search_results = wikipedia.search(kw, results=5)
+                            for title in search_results:
+                                if title in seen_titles:
+                                    continue
+                                try:
+                                    # Resolve title and verify page exists
+                                    summary = wikipedia.summary(title, sentences=1, auto_suggest=False)
+                                    url_title = urllib.parse.quote(title.replace(" ", "_"))
+                                    url = f"https://en.wikipedia.org/wiki/{url_title}"
+                                    found.append((title, url))
+                                    seen_titles.add(title)
+                                    break  # move to next keyword
+                                except wikipedia.exceptions.DisambiguationError:
+                                    continue
+                                except wikipedia.exceptions.PageError:
+                                    continue
+                        except Exception:
+                            continue
+                        if len(found) >= limit:
+                            break
+                    return found
+
+                # Get valid Wikipedia links
+                recommendations = get_wikipedia_links(keywords, num_suggestions)
+
+                # Show results
+                st.success("Here are your recommendations:")
+                for idx, (title, link) in enumerate(recommendations, 1):
+                    st.markdown(f"{idx}. [{title}]({link})")
+
+                if not recommendations:
+                    st.warning("No valid Wikipedia links found. Try refining the input.")
+
+            except Exception as e:
+                st.error(f"Something went wrong: {str(e)}")
+
 
