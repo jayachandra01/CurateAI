@@ -2,6 +2,7 @@ import streamlit as st
 from transformers import pipeline
 import wikipedia
 import urllib.parse
+import torch
 
 # Set page config
 st.set_page_config(page_title="CurateAI: Wikipedia Link Recommender", page_icon="📚")
@@ -17,7 +18,8 @@ input_text = st.text_area(" ", height=150)
 num_suggestions = st.slider("How many suggestions would you like?", 1, 10, 5)
 
 # Load Hugging Face text2text generation pipeline
-generator = pipeline("text2text-generation", model="google/flan-t5-base", device=-1)
+generator = pipeline("text2text-generation", model="google/flan-t5-base", device=0 if torch.cuda.is_available() else -1)
+
 
 # Wikipedia link fetcher
 def get_wikipedia_links(keywords, limit):
