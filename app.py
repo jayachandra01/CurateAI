@@ -14,13 +14,21 @@ generator = pipeline("text2text-generation", model="google/flan-t5-small", devic
 
 if st.button("🔍 Recommend") and user_input:
     with st.spinner("Generating recommendations..."):
-        prompt = f"List {num_links} relevant Wikipedia article titles based on the following content: {user_input}"
+        prompt = f"Suggest {num_links} specific and relevant Wikipedia article titles (only titles, no explanation) for this passage:\n{user_input}\n\nReturn them as a numbered list."
+
         try:
             response = generator(prompt, max_length=256)[0]['generated_text']
-            suggestions = response.strip().split("\n")
-            st.success("Here are your recommendations:")
-            for i, suggestion in enumerate(suggestions, start=1):
-                if suggestion.strip():
-                    st.markdown(f"{i}. {suggestion}")
+            suggestions = response.choices[0].message.content.strip().split("\n")
+st.success("Here are your recommendations:")
+for i, suggestion in enumerate(suggestions, start=1):
+    title = suggestion.strip()
+    if title:
+        # Remove numbering from model output if any (e.g., "1. Mahatma Gandhi")
+        if "." in title[:4]:
+            title = title.split(".", 1)[1].strip()
+
+        wiki_link = title.replace(" ", "_")
+        st.markdown(f"{i}. [{title}](https://en.wikipedia.org/wiki/{wiki_link})")
+
         except Exception as e:
             st.error(f"Error: {e}")
