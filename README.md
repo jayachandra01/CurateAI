@@ -34,19 +34,8 @@
 - [Wikipedia Python Library](https://pypi.org/project/wikipedia/)
 
 ---
+## Author
+-Jayachandra Nimagadda
+-contact me at jayachandranimagadda@gmail.com
 
-## 📦 Installation
-
-To run CurateAI locally:
-
-```bash
-git clone https://github.com/jayachandra01/CurateAI.git
-cd CurateAI
-pip install -r requirements.txt
-streamlit run app.py
-
-
-🙋‍♂️ Author
-Built by Jayachandra Nimagadda
-GitHub: @jayachandra01
 
