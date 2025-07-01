@@ -1,4 +1,6 @@
 
 streamlit
+wikipedia
+scikit-learn
 transformers
 torch
