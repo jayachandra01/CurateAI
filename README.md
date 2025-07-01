@@ -19,9 +19,10 @@
 ## 🚀 Demo
 
 <p align="center">
-  <img src="https://github.com/jayachandra01/CurateAI/raw/main/demo-screenshot-1.png" width="700"/>
+  <img src="![image](https://github.com/user-attachments/assets/ba7a61c2-d7e5-4641-83c5-8f77ab17ba9e)
+" width="700"/>
   <br><br>
-  <img src="https://github.com/jayachandra01/CurateAI/raw/main/demo-screenshot-2.png" width="700"/>
+  <img src="https://github.com/jayachandra01/CurateAI/blob/main/Screenshot%202025-07-01%20093616.png?raw=true" width="700"/>
 </p>
 
 ---
